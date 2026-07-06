@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة تحكم المتحدة لقطع الغيار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background: #0b0c10; color: #fff; padding: 40px; }
+        .form-container { max-width: 500px; margin: 0 auto; background: #1f2833; padding: 30px; border-radius: 10px; border: 1px solid #ff4d00; }
+        h2 { text-align: center; color: #ff4d00; }
+        label { display: block; margin: 15px 0 5px; }
+        input, select { width: 100%; padding: 10px; border-radius: 5px; border: none; background: #0b0c10; color: #fff; }
+        .btn { background: #ff4d00; color: #fff; padding: 12px; width: 100%; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .btn:hover { background: #e04400; }
+        .success-msg { color: #25d366; text-align: center; margin-top: 15px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2><img src="https://img.icons8.com/ios-filled/50/ff4d00/dashboard.png" style="vertical-align: middle; width:30px;"> إضافة قطعة غيار جديدة</h2>
+    
+    <form id="partsForm">
+        <label>اسم قطعة الغيار:</label>
+        <input type="text" id="partName" required placeholder="مثال: تيل فرامل خلفي">
+
+        <label>رقم القطعة (Part Number):</label>
+        <input type="text" id="partCode" required placeholder="مثال: KI-44320">
+
+        <label>ماركة السيارة:</label>
+        <select id="partBrand" required>
+            <option value="هيونداي">هيونداي</option>
+            <option value="كيا">كيا</option>
+            <option value="تويوتا">تويوتا</option>
+            <option value="نيسان">نيسان</option>
+            <option value="ميتسوبيشي">ميتسوبيشي</option>
+        </select>
+
+        <label>السعر (جنية):</label>
+        <input type="number" id="partPrice" required placeholder="ادخل السعر">
+
+        <label>رابط صورة المنتج (أو ارفعها أونلاين وضع الرابط):</label>
+        <input type="url" id="partImg" required placeholder="https://example.com/image.jpg">
+
+        <button type="submit" class="btn">حفظ القطعة تلقائياً في المخزن</button>
+    </form>
+    
+    <div class="success-msg" id="successMsg">✅ تم حفظ البيانات تلقائياً وإضافتها للموقع!</div>
+</div>
+
+<script>
+    document.getElementById('partsForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // منع الصفحة من إعادة التحميل
+
+        // 1. تجميع البيانات المكتوبة
+        const newPart = {
+            name: document.getElementById('partName').value,
+            code: document.getElementById('partCode').value,
+            brand: document.getElementById('partBrand').value,
+            price: document.getElementById('partPrice').value,
+            img: document.getElementById('partImg').value
+        };
+
+        // 2. جلب البيانات القديمة المخزنة (إن وجدت) أو إنشاء مصفوفة فارغة
+        let currentStorage = JSON.parse(localStorage.getItem('unitedParts')) || [];
+
+        // 3. إضافة القطعة الجديدة للبيانات القديمة
+        currentStorage.push(newPart);
+
+        // 4. الحفظ التلقائي في ذاكرة المتصفح بعد تحويلها لنص
+        localStorage.setItem('unitedParts', JSON.stringify(currentStorage));
+
+        // 5. إظهار رسالة نجاح وتصفير الفورم
+        document.getElementById('successMsg').style.display = 'block';
+        document.getElementById('partsForm').reset();
+
+        setTimeout(() => {
+            document.getElementById('successMsg').style.display = 'none';
+        }, 3000);
+    });
+</script>
+
+</body>
+</html>
